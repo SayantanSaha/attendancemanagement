@@ -1,4 +1,4 @@
-package wilp.dbms.attendancemanagement;
+package wilp.dbms.attendancemanagement.controller;
 
 import java.util.List;
 
