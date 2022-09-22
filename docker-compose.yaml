@@ -1,0 +1,36 @@
+version: '2.4'
+
+services:
+  db-attendancemanagement-bits-sem-1:
+    build: ./db
+    container_name: db-attendancemanagement-bits-sem-1
+    image: anushibin007/db-attendancemanagement-bits-sem-1:2019-CU4-ubuntu-16.04
+    restart: always
+    networks:
+     - network-attendancemanagement-bits-sem-1
+    ports:
+     - "1433:1433"
+    volumes:
+     - vol-attendancemanagement-bits-sem-1:/var/opt/mssql
+
+  server-attendancemanagement-bits-sem-1:
+    build: ./
+    container_name: server-attendancemanagement-bits-sem-1
+    depends_on:
+      db-attendancemanagement-bits-sem-1:
+       condition: service_healthy
+    image: anushibin007/server-attendancemanagement-bits-sem-1:latest
+    networks:
+     - network-attendancemanagement-bits-sem-1
+    ports:
+     - "8080:8080"
+    restart: always
+    environment:
+      DB_HOSTNAME: db-attendancemanagement-bits-sem-1
+
+networks:
+  network-attendancemanagement-bits-sem-1:
+    driver: bridge
+
+volumes:
+  vol-attendancemanagement-bits-sem-1:
