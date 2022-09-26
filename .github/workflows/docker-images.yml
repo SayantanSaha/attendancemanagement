@@ -1,0 +1,21 @@
+# This file is to test and see
+# if the Docker Images are being
+# built properly
+name: Docker Image Build Test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: docker-compose up
+      run: docker-compose up -d
