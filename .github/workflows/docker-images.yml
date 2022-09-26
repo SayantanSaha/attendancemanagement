@@ -1,6 +1,10 @@
-# This file is to test and see
-# if the Docker Images are being
-# built properly
+# This file is to test and see if the Docker Images are being
+# built properly.
+#
+# If there are any issues with any of the Dockerfile or
+# docker-compose.yml files, then this GitHub action will fail,
+# helping us identify that something is wrong with the
+# Docker scripts.
 name: Docker Image Build Test
 
 on:
@@ -17,5 +21,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: docker-compose up
-      run: docker-compose up -d
+    - name: docker-compose build
+      run: docker-compose build --no-cache
