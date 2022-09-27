@@ -6,6 +6,8 @@
 - MSSQL 2019 DB starts with the sample data provided in the SQL file ([AttendanceDBScript.sql](db/AttendanceDBScript.sql)).  
 - A sample endpoint (/attendances) that shows the data in the `Attendance` table.
 - A sample Controller, Entity & Model class.
+- GitHub Action: Runs mvn test for every commit.
+- GitHub Action: Runs docker-compose build for every commit.
 
 # What needs to be implemented 🚧
 - Create model (Entity) classes for all the DB Tables.  
