@@ -1,58 +1,78 @@
 package wilp.dbms.attendancemanagement.model;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
+
+/**
+ * The persistent class for the Attendance database table.
+ * 
+ */
 @Entity
-@Table(name = "Attendance")
+@NamedQuery(name="Attendance.findAll", query="SELECT a FROM Attendance a")
+public class Attendance implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-public class Attendance {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int att_id;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="att_id")
+	private int attId;
 
-	@Column(name = "att_stud_id")
-	private int att_stud_id;
+	@Column(name="att_time_stamp")
+	private Timestamp attTimeStamp;
 
-	@Column(name = "att_type_id")
-	private int att_type_id;
+	//bi-directional many-to-one association to AttendanceType
+	@ManyToOne
+	@JoinColumn(name="att_type_id")
+	private AttendanceType attendanceType;
 
-	@Column(name = "att_time_stamp")
-	private String att_time_stamp;
+	//bi-directional many-to-one association to Student
+	@ManyToOne
+	@JoinColumn(name="att_stud_id")
+	private Student student;
 
-	public int getAtt_id() {
-		return att_id;
+	public Attendance() {
 	}
 
-	public void setAtt_id(int att_id) {
-		this.att_id = att_id;
+	public int getAttId() {
+		return this.attId;
 	}
 
-	public int getAtt_stud_id() {
-		return att_stud_id;
+	public void setAttId(int attId) {
+		this.attId = attId;
 	}
 
-	public void setAtt_stud_id(int att_stud_id) {
-		this.att_stud_id = att_stud_id;
+	public Timestamp getAttTimeStamp() {
+		return this.attTimeStamp;
 	}
 
-	public int getAtt_type_id() {
-		return att_type_id;
+	public void setAttTimeStamp(Timestamp attTimeStamp) {
+		this.attTimeStamp = attTimeStamp;
 	}
 
-	public void setAtt_type_id(int att_type_id) {
-		this.att_type_id = att_type_id;
+	public AttendanceType getAttendanceType() {
+		return this.attendanceType;
 	}
 
-	public String getAtt_time_stamp() {
-		return att_time_stamp;
+	public void setAttendanceType(AttendanceType attendanceType) {
+		this.attendanceType = attendanceType;
 	}
 
-	public void setAtt_time_stamp(String att_time_stamp) {
-		this.att_time_stamp = att_time_stamp;
+	public Student getStudent() {
+		return this.student;
 	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
 }
