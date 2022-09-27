@@ -15,7 +15,7 @@ import javax.persistence.NamedQuery;
  * The persistent class for the Permission database table.
  * 
  */
-@Entity
+@Entity(name = "Permission")
 @NamedQuery(name = "Permission.findAll", query = "SELECT p FROM Permission p")
 public class Permission implements Serializable {
 	private static final long serialVersionUID = 1L;

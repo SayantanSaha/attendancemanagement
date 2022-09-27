@@ -15,7 +15,7 @@ import javax.persistence.NamedQuery;
  * The persistent class for the User database table.
  * 
  */
-@Entity
+@Entity(name = "User")
 @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;

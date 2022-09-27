@@ -24,6 +24,6 @@ The following command will delete all of the items related to any old compose an
 `docker-compose down && docker-compose up -d`
 
 # Access the test URL 🔗
-Make sure that you have started the instances using the command(s) given above. Then, the following test URL will show the entries in the `Attendance` table in the DB:
+Make sure that you have started the instances using the command(s) given above. Then, access the following URL for the Swagger UI:
 
-`http://localhost:8080/attendances`
+`http://localhost:8080/swagger-ui/index.html`

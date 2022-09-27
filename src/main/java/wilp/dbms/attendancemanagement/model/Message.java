@@ -14,7 +14,7 @@ import javax.persistence.NamedQuery;
  * The persistent class for the Message database table.
  * 
  */
-@Entity
+@Entity(name = "Message")
 @NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m")
 public class Message implements Serializable {
 	private static final long serialVersionUID = 1L;
