@@ -10,12 +10,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the AttendanceType database table.
  * 
  */
-@Entity
+@Entity(name = "AttendanceType")
+@Table(name = "AttendanceType")
 @NamedQuery(name = "AttendanceType.findAll", query = "SELECT a FROM AttendanceType a")
 public class AttendanceType implements Serializable {
 	private static final long serialVersionUID = 1L;

@@ -13,7 +13,7 @@ import javax.persistence.NamedQuery;
  * The persistent class for the Report database table.
  * 
  */
-@Entity
+@Entity(name = "Report")
 @NamedQuery(name = "Report.findAll", query = "SELECT r FROM Report r")
 public class Report implements Serializable {
 	private static final long serialVersionUID = 1L;

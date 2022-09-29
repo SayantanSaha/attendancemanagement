@@ -13,7 +13,7 @@ import javax.persistence.NamedQuery;
  * The persistent class for the Search database table.
  * 
  */
-@Entity
+@Entity(name = "Search")
 @NamedQuery(name = "Search.findAll", query = "SELECT s FROM Search s")
 public class Search implements Serializable {
 	private static final long serialVersionUID = 1L;

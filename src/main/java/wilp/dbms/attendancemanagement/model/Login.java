@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
  * The persistent class for the Login database table.
  * 
  */
-@Entity
+@Entity(name = "Login")
 @NamedQuery(name = "Login.findAll", query = "SELECT l FROM Login l")
 public class Login implements Serializable {
 	private static final long serialVersionUID = 1L;

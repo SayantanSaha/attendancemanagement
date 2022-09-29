@@ -16,7 +16,7 @@ import javax.persistence.OneToMany;
  * The persistent class for the Student database table.
  * 
  */
-@Entity
+@Entity(name = "Student")
 @NamedQuery(name = "Student.findAll", query = "SELECT s FROM Student s")
 public class Student implements Serializable {
 	private static final long serialVersionUID = 1L;
