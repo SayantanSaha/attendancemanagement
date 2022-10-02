@@ -36,7 +36,7 @@ The following command will delete all of the items related to any old compose an
 `docker-compose up -d db-attendancemanagement-bits-sem-1`  
 2. Make sure to add this line to your hosts file so that the Server knows how to contact the DB:  
 `127.0.0.1 db-attendancemanagement-bits-sem-1`  
-3. Now simply start your application (backend server) from your favorite IDE.  
+3. Start the backend server from CMD using the command `mvn spring-boot:run`. Note that you need to install MVN CLI before being able to run the above command.  
 4. You can finally start the frontend server using the `ng server` command.  
 
 # Access the Application 🔗
