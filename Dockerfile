@@ -22,3 +22,7 @@ COPY --from=stager /root/mm/target/attendancemanagement-0.0.1-SNAPSHOT.jar .
 CMD java -jar attendancemanagement-0.0.1-SNAPSHOT.jar
 
 EXPOSE 8080
+
+# Add Healthcheck to poll the app every 10 seconds
+HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=10 \
+CMD curl http://localhost:8080/health
