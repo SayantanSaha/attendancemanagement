@@ -1,0 +1,35 @@
+<div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="example-toolbar">
+    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <h1 class="example-app-name" style="cursor: pointer" routerLink="/">Attendance App</h1>
+    <span class="example-spacer"></span>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+      <mat-icon>login</mat-icon>
+    </button>
+    <button *ngIf="loggedIn" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="example-sidenav-container mat-elevation-z8"
+                         [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+                 [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [opened]="isShowing">
+      <div style="text-align: initial">
+        <button mat-button class="menu-button" [routerLink]="['/dashboard']" [routerLinkActive]="['is-active']" color="secondary">
+          <mat-icon style="vertical-align: text-top" class="base-color">assessment</mat-icon>
+          <span style="vertical-align: sub;"> Dashboard</span>
+        </button>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <!--<div class="content mat-elevation-z8">
+    <router-outlet></router-outlet>
+  </div>-->
+      <div class="content shadow p-3 mb-5 bg-body rounded">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
