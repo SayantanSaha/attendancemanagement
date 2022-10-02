@@ -8,14 +8,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+//NOTE: Hibernate-specific Annotations below
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
 @Entity
 @Table(name = "v_attendance")
-// NOTE: MSSQL-specific SQL Command
-// NOTE: Hibernate-specific Annotations
-@Subselect("select newid() as id, va.* from v_attendance va")
+
+// We are concatenating Date & AttendanceType to
+// generate an ID String on the fly so that we
+// can use it to query the data using that
+// generated ID
+@Subselect("select concat(va.Date, va.AttendanceType) as id, va.* from v_attendance va")
 @Immutable
 public class AttendanceView implements Serializable {
 
