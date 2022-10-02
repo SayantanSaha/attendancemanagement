@@ -27,6 +27,19 @@ services:
     restart: always
     environment:
       DB_HOSTNAME: db-attendancemanagement-bits-sem-1
+      
+  frontend-attendancemanagement-bits-sem-1:
+    build: ./AngularApp
+    container_name: frontend-attendancemanagement-bits-sem-1
+    image: anushibin007/frontend-attendancemanagement-bits-sem-1:latest
+    networks:
+     - network-attendancemanagement-bits-sem-1
+    ports:
+     - "80:80"
+    restart: always
+    environment:
+      DB_HOSTNAME: db-attendancemanagement-bits-sem-1
+      SERVER_NAME: server-attendancemanagement-bits-sem-1
 
 networks:
   network-attendancemanagement-bits-sem-1:
