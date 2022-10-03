@@ -9,9 +9,21 @@
 - Created model (Entity) classes for all the DB Tables.  
 - Created Repository Interfaces for all the Entities.  
 - Swagger UI for all the endpoints accessible from the Spring Boot app are available.  
+- Connection between the AngularJS Frontend and the Backend Server.  
 
-# What needs to be implemented 🚧
-- Connect the Frontend to the Backend Server.  
+# Team-member specific task list 📝  
+| Feature ID | Feature name | Description | Assignee | Status |
+|---|---|---|---|---|
+| T01 | User management (Admin) | Authentication, creation of the users, managing of user data|Harish NG|❓|
+| T02 | Login – Teacher, student, parent | Authentication on success takes to the respective user page|Sayanthan Saha|❓|
+| T03 | Dashboard | Represents the particular user’s data|Rokkam Nikilesh Sai|✔|
+| T04 | Search for Teacher, student | Ability to search student by its last name or unique id & particular course to get his/her attendance from assigned classes.|Shikar Shukla|❓|
+| T05 | Update - Teacher | Ability to update student attendance|Mekapati Naga Mallika|❓|
+| T06 | email notifications | Ability to sends email notifications to students who are absent|Shyam Sundar Puta|❓|
+| T07 | Absence Correction - admin, Teacher | Ability to correct the absence record with audit|Mohammad Irshad|❓|
+| T08 | Report | Ability to generate simple report based on certain selection criteria|Abhay Deshmukh|❓|
+| T09 | Change password  | User able to reset the password|Maj Sandeep Singh|❓|
+| T10 | Service end point integration | Exchange-protocol and integration solution|Anu Shibin J|✔|
 
 # How to simply spin up the whole Application-Stack 🏃‍♂️
 The following command will create an MSSQL Docker Container with the necessary DB for the project. Then it will start the Spring Boot project, which will be connected to the MSSQL Container instance. And finally starts the Angular JS frontend which connects to the Spring Boot backend and fetch the data from the same and show it in the UI.  
