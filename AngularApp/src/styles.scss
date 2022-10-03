@@ -3,10 +3,12 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-$base-color: #bda528;
+$icon-color: #bda528;
+$base-color: #050d1287;
 
 mat-toolbar {
-  background: $base-color !important;
+  /*background: linear-gradient(to left, rgba(102, 126, 234, 0.5), rgba(118, 75, 162, 0.5)) !important;*/
+  background: linear-gradient(to left, #0e3e6fd9, #0c3721a8) !important;
   color: white;
 }
 
@@ -14,6 +16,14 @@ mat-toolbar {
     color: $base-color;
 }
 
+.icon-color {
+  color: $icon-color;
+}
+
 .is-active {
     background-color: white;
+}
+
+.mat-drawer-container {
+  background-color: #e5dfdf !important;
 }

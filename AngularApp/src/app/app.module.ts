@@ -16,6 +16,9 @@ import { PlotlyModule } from 'angular-plotly.js';
 PlotlyModule.plotlyjs = PlotlyJS;
 
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { AttendanceService } from './attendance.service';
+import { HttpClientModule } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -31,9 +34,10 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     MatButtonModule,
     MatSidenavModule,
     MatListModule,
-    PlotlyModule
+    PlotlyModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [AttendanceService, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

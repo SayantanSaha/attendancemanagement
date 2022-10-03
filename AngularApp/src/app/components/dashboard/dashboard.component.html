@@ -1,23 +1,32 @@
-<div class="row">
-  <div class="col-md-6">
-    <plotly-plot [data]="barChart.data"
-                 [layout]="barChart.layout"
-                 [useResizeHandler]="true"></plotly-plot>
-  </div>
-  <div class="col-md-6">
-    <plotly-plot [data]="lineChart.data"
-                 [layout]="lineChart.layout"
-                 [useResizeHandler]="true"></plotly-plot>
-
-  </div>
+<div class="spinner-border text-primary" role="status" *ngIf="isLoading" style="position: absolute; left: 50%; top: 43%;">
+  <span class="visually-hidden">Loading...</span>
 </div>
-<div class="row">
-  <div class="col-md-6">
-    <plotly-plot [data]="pieChart.data"
-                 [layout]="pieChart.layout"
-                 ></plotly-plot>
-  </div>
-  <div class="col-md-6">
 
+<div *ngIf="!isLoading">
+  <div class="row">
+    <div class="col-md-12">
+      <plotly-plot [data]="dailyPresentGraph.data"
+                   [layout]="dailyPresentGraph.layout"
+                   [useResizeHandler]="true"></plotly-plot>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <plotly-plot [data]="dailyAbsenseGraph.data"
+                   [layout]="dailyAbsenseGraph.layout"
+                   [useResizeHandler]="true"></plotly-plot>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <plotly-plot [data]="monthlyAbsenceChart.data"
+                   [layout]="monthlyAbsenceChart.layout"
+                   [useResizeHandler]="true"></plotly-plot>
+
+    </div>
+    <div class="col-md-6">
+      <plotly-plot [data]="overallPieChart.data"
+                   [layout]="overallPieChart.layout"></plotly-plot>
+    </div>
   </div>
 </div>
