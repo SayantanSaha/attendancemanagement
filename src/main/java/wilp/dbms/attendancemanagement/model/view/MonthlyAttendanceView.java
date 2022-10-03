@@ -13,23 +13,23 @@ import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
 @Entity
-@Table(name = "v_attendance")
+@Table(name = "v_monthly_attendance")
 
 // We are concatenating Date & AttendanceType to
 // generate an ID String on the fly so that we
 // can use it to query the data using that
 // generated ID
-@Subselect("select concat(va.Date, va.AttendanceType) as id, va.* from v_attendance va")
+@Subselect("select va.MonthYear as id, va.* from v_monthly_attendance va")
 @Immutable
-public class AttendanceView implements Serializable {
+public class MonthlyAttendanceView implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	String id;
 
-	@Column(name = "Date")
-	private Timestamp date;
+	@Column(name = "MonthYear")
+	private String monthYear;
 
 	@Column(name = "AttendanceType")
 	private String attendanceType;
@@ -45,12 +45,12 @@ public class AttendanceView implements Serializable {
 		this.id = id;
 	}
 
-	public Timestamp getDate() {
-		return date;
+	public String getDate() {
+		return monthYear;
 	}
 
-	public void setDate(Timestamp date) {
-		this.date = date;
+	public void setDate(String monthYear) {
+		this.monthYear = monthYear;
 	}
 
 	public String getAttendanceType() {

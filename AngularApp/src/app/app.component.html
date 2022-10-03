@@ -16,9 +16,17 @@
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
                  [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [opened]="isShowing">
       <div style="text-align: initial">
-        <button mat-button class="menu-button" [routerLink]="['/dashboard']" [routerLinkActive]="['is-active']" color="secondary">
-          <mat-icon style="vertical-align: text-top" class="base-color">assessment</mat-icon>
+        <button mat-button class="menu-button mb-2" [routerLink]="['/dashboard']" [routerLinkActive]="['is-active','shadow','bg-body','rounded']" color="secondary">
+          <mat-icon style="vertical-align: text-top" class="icon-color">assessment</mat-icon>
           <span style="vertical-align: sub;"> Dashboard</span>
+        </button>
+        <button mat-button class="menu-button" routerLink="." color="secondary">
+          <mat-icon style="vertical-align: text-top" class="icon-color">people</mat-icon>
+          <span style="vertical-align: sub;"> Students</span>
+        </button>
+        <button mat-button class="menu-button" routerLink="." color="secondary">
+          <mat-icon style="vertical-align: text-top" class="icon-color">calendar_today</mat-icon>
+          <span style="vertical-align: sub;"> Attendance</span>
         </button>
       </div>
     </mat-sidenav>
