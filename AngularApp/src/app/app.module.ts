@@ -12,6 +12,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list'
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
+import { FormsModule } from '@angular/forms';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -19,11 +20,13 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AttendanceService } from './attendance.service';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent
+    DashboardComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { DatePipe } from '@angular/common';
     MatSidenavModule,
     MatListModule,
     PlotlyModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [AttendanceService, DatePipe],
   bootstrap: [AppComponent]
