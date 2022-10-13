@@ -1,0 +1,89 @@
+package nic.oad.pis.security.configuration;
+
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    /*@Value("${eSignServiceDomain}")
+    String eSignServiceDomain;*/
+    /*@Autowired
+    UserDetailsService userDetailsService;*/
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .anyRequest()
+
+                .permitAll();
+
+
+        http.headers().frameOptions().sameOrigin();
+        //TODO Urgent Enable CSRF and Uncomment in header.html and send in getdocid ajax request
+        http.csrf().disable();
+//        http.csrf().requireCsrfProtectionMatcher(new RequestMatcher() {
+//            private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+//            private RegexRequestMatcher apiMatcher = new RegexRequestMatcher("/v[0-9]*/.*", null);
+//
+//            @Override
+//            public boolean matches(HttpServletRequest request) {
+//                // No CSRF due to allowedMethod
+//                if(allowedMethods.matcher(request.getMethod()).matches())
+//                    return false;
+//
+//                // No CSRF due to api call
+//                if(apiMatcher.matches(request))
+//                    return false;
+//
+//                // CSRF for everything else that is not an API call or an allowedMethod
+//                return true;
+//            }
+//        });
+        //http.headers().frameOptions().disable();
+    }
+    /*@Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .ldapAuthentication()
+                .userDnPatterns("uid={0},ou=people")
+                .groupSearchBase("ou=groups")
+                .contextSource()
+                .url("ldaps://auths.nic.in:636/dc=springframework,dc=org")
+                .and()
+                .passwordCompare()
+                .passwordEncoder(new LdapShaPasswordEncoder())
+                .passwordAttribute("userPassword");
+    }*/
+  /*  @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(new BCryptPasswordEncoder());
+    }
+*/
+
+/*
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        //configuration.setAllowedOrigins(List.of(eSignServiceDomain));
+        configuration.setAllowedMethods(List.of("HEAD",
+                "GET", "POST", "PUT", "DELETE", "PATCH"));
+        // setAllowCredentials(true) is important, otherwise:
+        // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
+        configuration.setAllowCredentials(true);
+        // setAllowedHeaders is important! Without it, OPTIONS preflight request
+        // will fail with 403 Invalid CORS request
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/sign/HandleSignResponse", configuration);
+        return source;
+    }*/
+}
