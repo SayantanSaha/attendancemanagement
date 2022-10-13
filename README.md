@@ -61,3 +61,9 @@ The Swagger UI shows a list of all the endpoints that can be accessed from the S
 To access the frontend Angular JS UI, go to the following URL:  
 
 `http://localhost/index.html`
+
+# Miscellaneous commands & configuration: 🎲  
+1. JDBC URL for MS SQL Server with Windows Authentication (in case you are using SQL Server locally):  
+`jdbc:sqlserver://SERVER-NAME;trustServerCertificate=true;databaseName=SchoolAttendanceDB;integratedSecurity=true`  
+2. Docker Prune command to clean up all the images, containers and volumes from the Docker Daemon in order to free up space:  
+`docker system prune --all --force`  
