@@ -39517,12 +39517,12 @@ REFERENCES [dbo].[Role] ([role_id])
 GO
 ALTER TABLE [dbo].[User] CHECK CONSTRAINT [FK_User_Role]
 GO
-/****** Object:  StoredProcedure [dbo].[GetDialyAttendance]    Script Date: 2022-10-14 8:27:43 PM ******/
+/****** Object:  StoredProcedure [dbo].[GetDailyAttendance]    Script Date: 2022-10-14 8:27:43 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[GetDialyAttendance]
+CREATE PROCEDURE [dbo].[GetDailyAttendance]
 (
 	@user_id INT,
 	@startDate datetime,
