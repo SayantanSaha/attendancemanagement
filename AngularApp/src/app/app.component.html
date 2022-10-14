@@ -3,7 +3,7 @@
     <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
     <h1 class="example-app-name" style="cursor: pointer" routerLink="/">Attendance App</h1>
     <span class="example-spacer"></span>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+    <button [routerLink]="['/login']" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
       <mat-icon>login</mat-icon>
     </button>
     <button *ngIf="loggedIn" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">

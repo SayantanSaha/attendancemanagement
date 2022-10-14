@@ -1,5 +1,7 @@
 USE [master]
 GO
+DROP DATABASE IF EXISTS [SchoolAttendanceDB]
+GO
 CREATE DATABASE [SchoolAttendanceDB]
 GO
 USE [SchoolAttendanceDB]
@@ -14,10 +16,10 @@ CREATE TABLE [dbo].[AttendanceType](
 PRIMARY KEY CLUSTERED 
 (
 	[att_type_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Student]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Student]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -35,13 +37,16 @@ CREATE TABLE [dbo].[Student](
 	[stu_contact] [varchar](50) NOT NULL,
 	[date_of_birth] [datetime] NOT NULL,
 	[admission_date] [datetime] NOT NULL,
+	[parent_id] [int] NULL,
+	[teacher_id] [int] NULL,
+	[user_id] [int] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[stu_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Attendance]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Attendance]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -54,10 +59,10 @@ CREATE TABLE [dbo].[Attendance](
 PRIMARY KEY CLUSTERED 
 (
 	[att_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [dbo].[v_attendance]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  View [dbo].[v_attendance]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -73,7 +78,7 @@ JOIN dbo.Student b ON a.att_stud_id = b.stu_id
 JOIN dbo.AttendanceType c ON c.att_type_id = a.att_type_id
 GROUP BY a.att_time_stamp,c.att_type_name
 GO
-/****** Object:  View [dbo].[v_monthly_attendance]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  View [dbo].[v_monthly_attendance]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -89,22 +94,7 @@ JOIN dbo.Student b ON a.att_stud_id = b.stu_id
 JOIN dbo.AttendanceType c ON c.att_type_id = a.att_type_id
 GROUP BY DATENAME(MONTH, a.att_time_stamp),DATENAME(YEAR, a.att_time_stamp),c.att_type_name
 GO
-/****** Object:  Table [dbo].[Login]    Script Date: 2022-10-03 8:30:56 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Login](
-	[login_id] [int] NOT NULL,
-	[login_username] [varchar](50) NOT NULL,
-	[login_user_pwd] [varchar](16) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[login_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Message]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Message]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -119,10 +109,10 @@ CREATE TABLE [dbo].[Message](
 PRIMARY KEY CLUSTERED 
 (
 	[msg_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Permission]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Permission]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -135,10 +125,10 @@ CREATE TABLE [dbo].[Permission](
 PRIMARY KEY CLUSTERED 
 (
 	[per_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Report]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Report]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -150,10 +140,10 @@ CREATE TABLE [dbo].[Report](
 PRIMARY KEY CLUSTERED 
 (
 	[rpt_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Role]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Role]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -165,10 +155,10 @@ CREATE TABLE [dbo].[Role](
 PRIMARY KEY CLUSTERED 
 (
 	[role_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Search]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[Search]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -180,10 +170,10 @@ CREATE TABLE [dbo].[Search](
 PRIMARY KEY CLUSTERED 
 (
 	[search_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[StudentTestData]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[StudentTestData]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -197,7 +187,7 @@ CREATE TABLE [dbo].[StudentTestData](
 	[PhoneNo] [nvarchar](50) NOT NULL
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[User]    Script Date: 2022-10-03 8:30:56 PM ******/
+/****** Object:  Table [dbo].[User]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -207,12 +197,13 @@ CREATE TABLE [dbo].[User](
 	[user_name] [varchar](100) NOT NULL,
 	[user_email] [varchar](50) NOT NULL,
 	[user_mobile] [varchar](50) NOT NULL,
-	[login_id] [int] NULL,
 	[role_id] [int] NULL,
+	[login_username] [varchar](50) NULL,
+	[login_user_pwd] [varchar](50) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[user_id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[Attendance] ON 
@@ -38627,26 +38618,6 @@ INSERT [dbo].[AttendanceType] ([att_type_id], [att_type_name]) VALUES (3, N'Half
 GO
 INSERT [dbo].[AttendanceType] ([att_type_id], [att_type_name]) VALUES (4, N'Outdoor Events')
 GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (1, N'admin_user', N'admin@123')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (2, N'Ashrith', N'as@123')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (3, N'Susmitha', N'su@567')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (4, N'Vinod', N'vi@765')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (5, N'Rahul', N'ra@123')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (6, N'Dipya', N'di@165')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (7, N'Abhay', N'ab@183')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (8, N'Karan', N'ka@193')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (9, N'Usman', N'us@183')
-GO
-INSERT [dbo].[Login] ([login_id], [login_username], [login_user_pwd]) VALUES (10, N'Kunal', N'ku@133')
-GO
 INSERT [dbo].[Message] ([msg_id], [msg_text], [time_stamp], [to], [cc], [bcc]) VALUES (1, N'Fee of amount INR 100 is due by 2022-01-15', CAST(N'2022-01-01T00:00:00.000' AS DateTime), N'student1@email.com;student2@email.com', N'finance@email.com', N'admin@email.com')
 GO
 INSERT [dbo].[Message] ([msg_id], [msg_text], [time_stamp], [to], [cc], [bcc]) VALUES (2, N'Semester 2 exam starts on 2022-06-01', CAST(N'2022-04-01T00:00:00.000' AS DateTime), N'students-2021@email.com', N'exams@email.com', N'admin@email.com')
@@ -38689,405 +38660,405 @@ INSERT [dbo].[Role] ([role_id], [role_name], [role_description]) VALUES (4, N'Pa
 GO
 SET IDENTITY_INSERT [dbo].[Student] ON 
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (1, N'Maria', N'Sullivan', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456789', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (1, N'Maria', N'Sullivan', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456789', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (2, N'Savana', N'West', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456790', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (2, N'Savana', N'West', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456790', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (3, N'Alberta', N'Baker', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456791', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (3, N'Alberta', N'Baker', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456791', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (4, N'Aldus', N'Hall', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456792', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (4, N'Aldus', N'Hall', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456792', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (5, N'George', N'Lloyd', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456793', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (5, N'George', N'Lloyd', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456793', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (6, N'Alen', N'Douglas', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456794', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (6, N'Alen', N'Douglas', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456794', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (7, N'Maria', N'Gray', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456795', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (7, N'Maria', N'Gray', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456795', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (8, N'Nicholas', N'Russell', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456796', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (8, N'Nicholas', N'Russell', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456796', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (9, N'David', N'Bailey', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456797', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (9, N'David', N'Bailey', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456797', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (10, N'Aston', N'Armstrong', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456798', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (10, N'Aston', N'Armstrong', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456798', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (11, N'Aida', N'Taylor', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456799', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (11, N'Aida', N'Taylor', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456799', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (12, N'Chelsea', N'Higgins', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456800', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (12, N'Chelsea', N'Higgins', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456800', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (13, N'Mary', N'Riley', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456801', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (13, N'Mary', N'Riley', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456801', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (14, N'Ned', N'Bailey', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456802', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (14, N'Ned', N'Bailey', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456802', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (15, N'Ted', N'Carroll', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456803', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (15, N'Ted', N'Carroll', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456803', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (16, N'Kristian', N'Mason', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456804', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (16, N'Kristian', N'Mason', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456804', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (17, N'Darcy', N'Hawkins', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456805', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (17, N'Darcy', N'Hawkins', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456805', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (18, N'Patrick', N'Robinson', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456806', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (18, N'Patrick', N'Robinson', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456806', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (19, N'Vivian', N'Riley', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456807', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (19, N'Vivian', N'Riley', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456807', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (20, N'Arthur', N'Smith', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456808', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (20, N'Arthur', N'Smith', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456808', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (21, N'Miller', N'Howard', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456809', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (21, N'Miller', N'Howard', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456809', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (22, N'Samantha', N'Russell', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456810', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (22, N'Samantha', N'Russell', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456810', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (23, N'Kelvin', N'Miller', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456811', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (23, N'Kelvin', N'Miller', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456811', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (24, N'Eric', N'Scott', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456812', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (24, N'Eric', N'Scott', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456812', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (25, N'Belinda', N'Cooper', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456813', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (25, N'Belinda', N'Cooper', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456813', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (26, N'Grace', N'Harper', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456814', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (26, N'Grace', N'Harper', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456814', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (27, N'Daisy', N'Morrison', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456815', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (27, N'Daisy', N'Morrison', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456815', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (28, N'Edgar', N'Carter', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456816', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (28, N'Edgar', N'Carter', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456816', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (29, N'Lyndon', N'Bennett', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456817', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (29, N'Lyndon', N'Bennett', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456817', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (30, N'Brooke', N'Armstrong', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456818', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (30, N'Brooke', N'Armstrong', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456818', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (31, N'Ned', N'Craig', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456819', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (31, N'Ned', N'Craig', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456819', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (32, N'Walter', N'Alexander', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456820', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (32, N'Walter', N'Alexander', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456820', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (33, N'Violet', N'Lloyd', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456821', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (33, N'Violet', N'Lloyd', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456821', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (34, N'Wilson', N'Watson', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456822', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (34, N'Wilson', N'Watson', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456822', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (35, N'Connie', N'Davis', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456823', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (35, N'Connie', N'Davis', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456823', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (36, N'Max', N'Ferguson', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456824', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (36, N'Max', N'Ferguson', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456824', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (37, N'Jessica', N'Robinson', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456825', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (37, N'Jessica', N'Robinson', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456825', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (38, N'Naomi', N'Crawford', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456826', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (38, N'Naomi', N'Crawford', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456826', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (39, N'Miranda', N'Smith', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456827', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (39, N'Miranda', N'Smith', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456827', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (40, N'Haris', N'Morris', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456828', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (40, N'Haris', N'Morris', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456828', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (41, N'Arianna', N'Foster', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456829', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (41, N'Arianna', N'Foster', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456829', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (42, N'David', N'Richards', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456830', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (42, N'David', N'Richards', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456830', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (43, N'Lucy', N'Cooper', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456831', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (43, N'Lucy', N'Cooper', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456831', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (44, N'Kelvin', N'Wells', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456832', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (44, N'Kelvin', N'Wells', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456832', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (45, N'Marcus', N'Stewart', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456833', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (45, N'Marcus', N'Stewart', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456833', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (46, N'Florrie', N'Morris', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456834', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (46, N'Florrie', N'Morris', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456834', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (47, N'Kelsey', N'Armstrong', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456835', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (47, N'Kelsey', N'Armstrong', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456835', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (48, N'Stella', N'Nelson', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456836', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (48, N'Stella', N'Nelson', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456836', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (49, N'Rafael', N'Rogers', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456837', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (49, N'Rafael', N'Rogers', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456837', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (50, N'Michelle', N'Sullivan', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456838', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (50, N'Michelle', N'Sullivan', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456838', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (51, N'Frederick', N'Ferguson', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456839', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (51, N'Frederick', N'Ferguson', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456839', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (52, N'Kelsey', N'Douglas', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456840', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (52, N'Kelsey', N'Douglas', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456840', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (53, N'Lucas', N'Reed', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456841', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (53, N'Lucas', N'Reed', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456841', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (54, N'Arnold', N'Lloyd', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456842', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (54, N'Arnold', N'Lloyd', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456842', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (55, N'Harold', N'Barrett', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456843', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (55, N'Harold', N'Barrett', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456843', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (56, N'Wilson', N'Cunningham', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456844', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (56, N'Wilson', N'Cunningham', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456844', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (57, N'Luke', N'Mason', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456845', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (57, N'Luke', N'Mason', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456845', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (58, N'Richard', N'Dixon', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456846', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (58, N'Richard', N'Dixon', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456846', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (59, N'Audrey', N'Murphy', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456847', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (59, N'Audrey', N'Murphy', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456847', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (60, N'Patrick', N'Gibson', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456848', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (60, N'Patrick', N'Gibson', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456848', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (61, N'Paige', N'Cameron', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456849', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (61, N'Paige', N'Cameron', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456849', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (62, N'Connie', N'Grant', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456850', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (62, N'Connie', N'Grant', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456850', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (63, N'Myra', N'Baker', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456851', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (63, N'Myra', N'Baker', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456851', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (64, N'Kellan', N'Walker', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456852', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (64, N'Kellan', N'Walker', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456852', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (65, N'Melissa', N'Cameron', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456853', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (65, N'Melissa', N'Cameron', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456853', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (66, N'Tony', N'Ryan', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456854', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (66, N'Tony', N'Ryan', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456854', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (67, N'Chester', N'Gibson', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456855', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (67, N'Chester', N'Gibson', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456855', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (68, N'Briony', N'Phillips', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456856', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (68, N'Briony', N'Phillips', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456856', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (69, N'Adelaide', N'Taylor', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456857', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (69, N'Adelaide', N'Taylor', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456857', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (70, N'Agata', N'Ellis', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456858', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (70, N'Agata', N'Ellis', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456858', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (71, N'Robert', N'Harper', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456859', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (71, N'Robert', N'Harper', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456859', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (72, N'Alexia', N'Walker', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456860', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (72, N'Alexia', N'Walker', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456860', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (73, N'Honey', N'Payne', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456861', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (73, N'Honey', N'Payne', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456861', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (74, N'Lydia', N'Crawford', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456862', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (74, N'Lydia', N'Crawford', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456862', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (75, N'Thomas', N'Johnston', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456863', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (75, N'Thomas', N'Johnston', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456863', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (76, N'Justin', N'West', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456864', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (76, N'Justin', N'West', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456864', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (77, N'Arthur', N'Johnson', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456865', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (77, N'Arthur', N'Johnson', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456865', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (78, N'Max', N'Rogers', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456866', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (78, N'Max', N'Rogers', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456866', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (79, N'Adam', N'Cunningham', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456867', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (79, N'Adam', N'Cunningham', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456867', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (80, N'Preston', N'Cole', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456868', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (80, N'Preston', N'Cole', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456868', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (81, N'Agata', N'Adams', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456869', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (81, N'Agata', N'Adams', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456869', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (82, N'Melissa', N'Bailey', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456870', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (82, N'Melissa', N'Bailey', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456870', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (83, N'Aston', N'Mason', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456871', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (83, N'Aston', N'Mason', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456871', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (84, N'Rafael', N'Spencer', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456872', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (84, N'Rafael', N'Spencer', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456872', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (85, N'Kimberly', N'Russell', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456873', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (85, N'Kimberly', N'Russell', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456873', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (86, N'Fiona', N'Parker', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456874', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (86, N'Fiona', N'Parker', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456874', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (87, N'Lyndon', N'Chapman', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456875', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (87, N'Lyndon', N'Chapman', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456875', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (88, N'Ada', N'Parker', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456876', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (88, N'Ada', N'Parker', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456876', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (89, N'Lucas', N'Hamilton', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456877', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (89, N'Lucas', N'Hamilton', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456877', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (90, N'Grace', N'Myers', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456878', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (90, N'Grace', N'Myers', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456878', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (91, N'Jared', N'Johnston', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456879', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (91, N'Jared', N'Johnston', N'M', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456879', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (92, N'Kimberly', N'Roberts', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456880', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (92, N'Kimberly', N'Roberts', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456880', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (93, N'Natalie', N'Davis', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456881', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (93, N'Natalie', N'Davis', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456881', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (94, N'James', N'Gibson', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456882', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (94, N'James', N'Gibson', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456882', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (95, N'Anna', N'Moore', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456883', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (95, N'Anna', N'Moore', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456883', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (96, N'Eric', N'Smith', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456884', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (96, N'Eric', N'Smith', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456884', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (97, N'Amber', N'Wells', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456885', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (97, N'Amber', N'Wells', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456885', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (98, N'Edward', N'Smith', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456886', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (98, N'Edward', N'Smith', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456886', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (99, N'Alford', N'Ellis', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456887', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (99, N'Alford', N'Ellis', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456887', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (100, N'Melanie', N'Dixon', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456888', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (100, N'Melanie', N'Dixon', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456888', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (101, N'Kelsey', N'Hall', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456889', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (101, N'Kelsey', N'Hall', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456889', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (102, N'Ada', N'Campbell', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456890', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (102, N'Ada', N'Campbell', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456890', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (103, N'Melissa', N'Stewart', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456891', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (103, N'Melissa', N'Stewart', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456891', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (104, N'Blake', N'Murphy', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456892', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (104, N'Blake', N'Murphy', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456892', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (105, N'Deanna', N'Stewart', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456893', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (105, N'Deanna', N'Stewart', N'F', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456893', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (106, N'Lucas', N'Mason', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456894', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (106, N'Lucas', N'Mason', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456894', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (107, N'Michael', N'Sullivan', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456895', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (107, N'Michael', N'Sullivan', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456895', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (108, N'Lenny', N'Barnes', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456896', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (108, N'Lenny', N'Barnes', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456896', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (109, N'Harold', N'Davis', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456897', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (109, N'Harold', N'Davis', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456897', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (110, N'Miranda', N'Perkins', N'F', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456898', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (110, N'Miranda', N'Perkins', N'F', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456898', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (111, N'Heather', N'Owens', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456899', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (111, N'Heather', N'Owens', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456899', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (112, N'Rubie', N'Allen', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456900', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (112, N'Rubie', N'Allen', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456900', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (113, N'Adison', N'Walker', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456901', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (113, N'Adison', N'Walker', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456901', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (114, N'Stuart', N'Jones', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456902', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (114, N'Stuart', N'Jones', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456902', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (115, N'Adelaide', N'Johnson', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456903', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (115, N'Adelaide', N'Johnson', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456903', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (116, N'Jenna', N'Elliott', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456904', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (116, N'Jenna', N'Elliott', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456904', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (117, N'Kristian', N'Wells', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456905', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (117, N'Kristian', N'Wells', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456905', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (118, N'Gianna', N'Stevens', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456906', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (118, N'Gianna', N'Stevens', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456906', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (119, N'Alberta', N'Harris', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456907', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (119, N'Alberta', N'Harris', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456907', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (120, N'Alissa', N'Johnson', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456908', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (120, N'Alissa', N'Johnson', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456908', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (121, N'Alford', N'Foster', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456909', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (121, N'Alford', N'Foster', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456909', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (122, N'Darcy', N'Richards', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456910', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (122, N'Darcy', N'Richards', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456910', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (123, N'Briony', N'Spencer', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456911', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (123, N'Briony', N'Spencer', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456911', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (124, N'Connie', N'Cooper', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456912', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (124, N'Connie', N'Cooper', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456912', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (125, N'Arianna', N'Kelley', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456913', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (125, N'Arianna', N'Kelley', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456913', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (126, N'Ryan', N'Wilson', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456914', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (126, N'Ryan', N'Wilson', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456914', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (127, N'Stuart', N'Adams', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456915', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (127, N'Stuart', N'Adams', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456915', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (128, N'Eddy', N'Henderson', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456916', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (128, N'Eddy', N'Henderson', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456916', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (129, N'Michelle', N'Fowler', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456917', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (129, N'Michelle', N'Fowler', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456917', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (130, N'Lily', N'Elliott', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456918', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (130, N'Lily', N'Elliott', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456918', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (131, N'Charlotte', N'Alexander', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456919', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (131, N'Charlotte', N'Alexander', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456919', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (132, N'Antony', N'Murphy', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456920', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (132, N'Antony', N'Murphy', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456920', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (133, N'Miller', N'Barnes', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456921', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (133, N'Miller', N'Barnes', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456921', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (134, N'Valeria', N'Carter', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456922', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (134, N'Valeria', N'Carter', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456922', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (135, N'Naomi', N'Miller', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456923', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (135, N'Naomi', N'Miller', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456923', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (136, N'Sofia', N'Howard', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456924', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (136, N'Sofia', N'Howard', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456924', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (137, N'Vincent', N'Gibson', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456925', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (137, N'Vincent', N'Gibson', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456925', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (138, N'Brianna', N'Anderson', N'F', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456926', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (138, N'Brianna', N'Anderson', N'F', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456926', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (139, N'Victor', N'Douglas', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456927', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (139, N'Victor', N'Douglas', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456927', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (140, N'Vivian', N'Morris', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456928', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (140, N'Vivian', N'Morris', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456928', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (141, N'Elise', N'Hawkins', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456929', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (141, N'Elise', N'Hawkins', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456929', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (142, N'Derek', N'Richards', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456930', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (142, N'Derek', N'Richards', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456930', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (143, N'Amy', N'Foster', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456931', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (143, N'Amy', N'Foster', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456931', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (144, N'Ryan', N'Harper', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456932', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (144, N'Ryan', N'Harper', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456932', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (145, N'Roland', N'Stewart', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456933', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (145, N'Roland', N'Stewart', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456933', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (146, N'Oscar', N'Carter', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456934', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (146, N'Oscar', N'Carter', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456934', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (147, N'Amanda', N'Gray', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456935', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (147, N'Amanda', N'Gray', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456935', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (148, N'Charlie', N'Carroll', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456936', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (148, N'Charlie', N'Carroll', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456936', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (149, N'Carlos', N'Mitchell', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456937', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (149, N'Carlos', N'Mitchell', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456937', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (150, N'Tara', N'Roberts', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456938', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (150, N'Tara', N'Roberts', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456938', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (151, N'Valeria', N'Harrison', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456939', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (151, N'Valeria', N'Harrison', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456939', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (152, N'Olivia', N'Holmes', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456940', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (152, N'Olivia', N'Holmes', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456940', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (153, N'Lenny', N'Hunt', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456941', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (153, N'Lenny', N'Hunt', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456941', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (154, N'Sophia', N'Davis', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456942', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (154, N'Sophia', N'Davis', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456942', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (155, N'Maya', N'Montgomery', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456943', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (155, N'Maya', N'Montgomery', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456943', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (156, N'Kirsten', N'Walker', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456944', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (156, N'Kirsten', N'Walker', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456944', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (157, N'Aldus', N'Craig', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456945', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (157, N'Aldus', N'Craig', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456945', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (158, N'Sofia', N'Andrews', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456946', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (158, N'Sofia', N'Andrews', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456946', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (159, N'Wilson', N'Kelly', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456947', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (159, N'Wilson', N'Kelly', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456947', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (160, N'Julian', N'Payne', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456948', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (160, N'Julian', N'Payne', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456948', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (161, N'Emma', N'Richardson', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456949', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (161, N'Emma', N'Richardson', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456949', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (162, N'Robert', N'Stewart', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456950', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (162, N'Robert', N'Stewart', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456950', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (163, N'Julia', N'Ferguson', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456951', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (163, N'Julia', N'Ferguson', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456951', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (164, N'Tiana', N'Barrett', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456952', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (164, N'Tiana', N'Barrett', N'F', N'Indian', N'Graduate', N'G-02', N'A', N'FirstSem', N'9123456952', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (165, N'Madaline', N'Cooper', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456953', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (165, N'Madaline', N'Cooper', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456953', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (166, N'Clark', N'Alexander', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456954', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (166, N'Clark', N'Alexander', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456954', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (167, N'Chester', N'Thomas', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456955', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (167, N'Chester', N'Thomas', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456955', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (168, N'Alexia', N'Rogers', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456956', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (168, N'Alexia', N'Rogers', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456956', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (169, N'Maria', N'Wilson', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456957', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (169, N'Maria', N'Wilson', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456957', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (170, N'Edgar', N'Cooper', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456958', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (170, N'Edgar', N'Cooper', N'M', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456958', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (171, N'Adam', N'Edwards', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456959', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (171, N'Adam', N'Edwards', N'M', N'Indian', N'Graduate', N'G-08', N'A', N'FirstSem', N'9123456959', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (172, N'Sabrina', N'Edwards', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456960', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (172, N'Sabrina', N'Edwards', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456960', CAST(N'2003-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-14T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (173, N'Darcy', N'Roberts', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456961', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (173, N'Darcy', N'Roberts', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456961', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (174, N'Melanie', N'Perkins', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456962', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (174, N'Melanie', N'Perkins', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456962', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (175, N'Henry', N'Allen', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456963', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (175, N'Henry', N'Allen', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456963', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (176, N'Daryl', N'Bailey', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456964', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (176, N'Daryl', N'Bailey', N'M', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456964', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (177, N'Vanessa', N'Carroll', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456965', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (177, N'Vanessa', N'Carroll', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456965', CAST(N'1993-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-04T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (178, N'Heather', N'Reed', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456966', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (178, N'Heather', N'Reed', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456966', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (179, N'Caroline', N'Farrell', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456967', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (179, N'Caroline', N'Farrell', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456967', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (180, N'Marcus', N'Ross', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456968', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (180, N'Marcus', N'Ross', N'M', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456968', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (181, N'Arthur', N'Rogers', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456969', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (181, N'Arthur', N'Rogers', N'M', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456969', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (182, N'Wilson', N'Martin', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456970', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (182, N'Wilson', N'Martin', N'M', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456970', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (183, N'Violet', N'Harris', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456971', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (183, N'Violet', N'Harris', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456971', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (184, N'Preston', N'Harper', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456972', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (184, N'Preston', N'Harper', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456972', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (185, N'Cherry', N'Crawford', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456973', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (185, N'Cherry', N'Crawford', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456973', CAST(N'2002-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-13T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (186, N'Oscar', N'Wilson', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456974', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (186, N'Oscar', N'Wilson', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456974', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (187, N'Darcy', N'Cameron', N'F', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456975', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (187, N'Darcy', N'Cameron', N'F', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456975', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (188, N'Jasmine', N'Howard', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456976', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (188, N'Jasmine', N'Howard', N'F', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456976', CAST(N'1992-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-03T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (189, N'Olivia', N'Anderson', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456977', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (189, N'Olivia', N'Anderson', N'F', N'Indian', N'Graduate', N'G-05', N'B', N'FirstSem', N'9123456977', CAST(N'1997-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-08T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (190, N'Dale', N'Bennett', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456978', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (190, N'Dale', N'Bennett', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456978', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (191, N'Alford', N'Dixon', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456979', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (191, N'Alford', N'Dixon', N'M', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456979', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (192, N'Steven', N'Mitchell', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456980', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (192, N'Steven', N'Mitchell', N'M', N'Indian', N'Graduate', N'G-04', N'A', N'FirstSem', N'9123456980', CAST(N'2001-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-12T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (193, N'Alina', N'Farrell', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456981', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (193, N'Alina', N'Farrell', N'F', N'Indian', N'Graduate', N'G-03', N'B', N'FirstSem', N'9123456981', CAST(N'2000-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-11T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (194, N'Dexter', N'Henderson', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456982', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (194, N'Dexter', N'Henderson', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456982', CAST(N'1994-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-05T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (195, N'Caroline', N'Grant', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456983', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (195, N'Caroline', N'Grant', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456983', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (196, N'Rubie', N'Reed', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456984', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (196, N'Rubie', N'Reed', N'F', N'Indian', N'Graduate', N'G-00', N'A', N'FirstSem', N'9123456984', CAST(N'1995-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-06T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (197, N'Jessica', N'Stewart', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456985', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (197, N'Jessica', N'Stewart', N'F', N'Indian', N'Graduate', N'G-01', N'B', N'FirstSem', N'9123456985', CAST(N'1996-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-07T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (198, N'Sofia', N'Grant', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456986', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (198, N'Sofia', N'Grant', N'F', N'Indian', N'Graduate', N'G-06', N'A', N'FirstSem', N'9123456986', CAST(N'1998-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-09T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (199, N'Emily', N'Murphy', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456987', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (199, N'Emily', N'Murphy', N'F', N'Indian', N'Graduate', N'G-07', N'B', N'FirstSem', N'9123456987', CAST(N'1999-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
-INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date]) VALUES (200, N'Chester', N'Sullivan', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456988', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime))
+INSERT [dbo].[Student] ([stu_id], [stu_first_name], [stu_last_name], [gender], [nationality], [ed_level], [grade], [section], [semester], [stu_contact], [date_of_birth], [admission_date], [parent_id], [teacher_id], [user_id]) VALUES (200, N'Chester', N'Sullivan', N'M', N'Indian', N'Graduate', N'G-09', N'B', N'FirstSem', N'9123456988', CAST(N'2004-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-15T00:00:00.000' AS DateTime), NULL, NULL, NULL)
 GO
 SET IDENTITY_INSERT [dbo].[Student] OFF
 GO
@@ -39491,25 +39462,25 @@ INSERT [dbo].[StudentTestData] ([FirstName], [LastName], [Gender], [Age], [RandN
 GO
 INSERT [dbo].[StudentTestData] ([FirstName], [LastName], [Gender], [Age], [RandNo], [PhoneNo]) VALUES (N'Chester', N'Sullivan', N'Male', 18, N'9', N'9123456988')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (1, N'Ashrith', N'ashrith01@email.com', N'+91 9876545210', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (1, N'Ashrith', N'ashrith01@email.com', N'+91 9876545210', NULL, N'Ashrith', N'as@123')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (2, N'Bharath', N'bharath@email.com', N'+91 9876543674', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (2, N'Bharath', N'bharath@email.com', N'+91 9876543674', 1, N'admin_user', N'admin@123')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (3, N'Susmitha', N'susmitha@email.com', N'+91 7896543456', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (3, N'Susmitha', N'susmitha@email.com', N'+91 7896543456', NULL, N'Susmitha', N'su@567')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (4, N'Rahul Singh', N'rahul@email.com', N'+91 9896794345', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (4, N'Rahul Singh', N'rahul@email.com', N'+91 9896794345', NULL, N'Rahul', N'ra@123')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (5, N'Dipya Kumari', N'dipya@email.com', N'+91 6898573456', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (5, N'Dipya Kumari', N'dipya@email.com', N'+91 6898573456', NULL, N'Dipya', N'di@165')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (6, N'Karan Khemka', N'karan@email.com', N'+91 9845593456', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (6, N'Karan Khemka', N'karan@email.com', N'+91 9845593456', NULL, N'Karan', N'ka@193')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (7, N'Abhay Joshi', N'abhay@email.com', N'+91 8868573457', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (7, N'Abhay Joshi', N'abhay@email.com', N'+91 8868573457', NULL, N'Abhay', N'ab@183')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (8, N'vinod Charan', N'vinod@email.com', N'+91 7898573456', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (8, N'vinod Charan', N'vinod@email.com', N'+91 7898573456', NULL, N'Vinod', N'vi@765')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (9, N'Usman Khan', N'usman@email.com', N'+91 9896573456', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (9, N'Usman Khan', N'usman@email.com', N'+91 9896573456', NULL, N'Usman', N'us@183')
 GO
-INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [login_id], [role_id]) VALUES (10, N'Kunal Mehatha', N'karan@email.com', N'+91 8898583456', NULL, NULL)
+INSERT [dbo].[User] ([user_id], [user_name], [user_email], [user_mobile], [role_id], [login_username], [login_user_pwd]) VALUES (10, N'Kunal Mehatha', N'karan@email.com', N'+91 8898583456', NULL, N'Kunal', N'ku@133')
 GO
 ALTER TABLE [dbo].[Attendance]  WITH NOCHECK ADD  CONSTRAINT [FK_Attendance_AttendanceType] FOREIGN KEY([att_type_id])
 REFERENCES [dbo].[AttendanceType] ([att_type_id])
@@ -39526,15 +39497,103 @@ REFERENCES [dbo].[Role] ([role_id])
 GO
 ALTER TABLE [dbo].[Permission] CHECK CONSTRAINT [FK_Permission_Role]
 GO
-ALTER TABLE [dbo].[User]  WITH CHECK ADD  CONSTRAINT [FK_User_Login] FOREIGN KEY([login_id])
-REFERENCES [dbo].[Login] ([login_id])
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [FK_Student_User_parent_id] FOREIGN KEY([parent_id])
+REFERENCES [dbo].[User] ([user_id])
 GO
-ALTER TABLE [dbo].[User] CHECK CONSTRAINT [FK_User_Login]
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [FK_Student_User_parent_id]
+GO
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [FK_Student_User_teacher_id] FOREIGN KEY([teacher_id])
+REFERENCES [dbo].[User] ([user_id])
+GO
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [FK_Student_User_teacher_id]
+GO
+ALTER TABLE [dbo].[Student]  WITH CHECK ADD  CONSTRAINT [FK_Student_User_user_id] FOREIGN KEY([user_id])
+REFERENCES [dbo].[User] ([user_id])
+GO
+ALTER TABLE [dbo].[Student] CHECK CONSTRAINT [FK_Student_User_user_id]
 GO
 ALTER TABLE [dbo].[User]  WITH CHECK ADD  CONSTRAINT [FK_User_Role] FOREIGN KEY([role_id])
 REFERENCES [dbo].[Role] ([role_id])
 GO
 ALTER TABLE [dbo].[User] CHECK CONSTRAINT [FK_User_Role]
+GO
+/****** Object:  StoredProcedure [dbo].[GetDialyAttendance]    Script Date: 2022-10-14 8:27:43 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetDialyAttendance]
+(
+	@user_id INT,
+	@startDate datetime,
+	@endDate datetime
+)
+AS
+BEGIN
+	declare @roleId INT
+	select @roleId = (select role_id from dbo.[User] where [user_id] = @user_id)
+
+	--Admin
+	IF(@roleId = 1)
+	BEGIN
+		--select * from dbo.[role]
+		SELECT   
+			 a.att_time_stamp AS [Date],  
+			 c.att_type_name  AS [AttendanceType],  
+			 COUNT(c.att_type_id) AS Count  
+		FROM dbo.Attendance a  
+		JOIN dbo.Student b ON a.att_stud_id = b.stu_id  
+		JOIN dbo.AttendanceType c ON c.att_type_id = a.att_type_id  
+		WHERE (@startDate IS NULL OR a.att_time_stamp >= @startDate)
+		AND (@endDate IS NULL OR a.att_time_stamp <= @endDate)
+		GROUP BY a.att_time_stamp,c.att_type_name
+	END
+	--Teacher
+	ELSE IF (@roleId = 2)
+	BEGIN
+		SELECT   
+			 a.att_time_stamp AS [Date],  
+			 c.att_type_name  AS [AttendanceType],  
+			 COUNT(c.att_type_id) AS Count  
+		FROM dbo.Attendance a  
+		JOIN dbo.Student b ON a.att_stud_id = b.stu_id  
+		JOIN dbo.AttendanceType c ON c.att_type_id = a.att_type_id  
+		WHERE (@startDate IS NULL OR a.att_time_stamp >= @startDate)
+		AND (@endDate IS NULL OR a.att_time_stamp <= @endDate)
+		AND b.teacher_id = @user_id
+		GROUP BY a.att_time_stamp,c.att_type_name
+	END
+	--Student
+	ELSE IF (@roleId = 3)
+	BEGIN
+		SELECT
+			 a.att_time_stamp AS [Date],  
+			 c.att_type_name  AS [AttendanceType],  
+			 COUNT(c.att_type_id) AS Count  
+		FROM dbo.Attendance a  
+		JOIN dbo.Student b ON a.att_stud_id = b.stu_id  
+		JOIN dbo.AttendanceType c ON c.att_type_id = a.att_type_id  
+		WHERE (@startDate IS NULL OR a.att_time_stamp >= @startDate)
+		AND (@endDate IS NULL OR a.att_time_stamp <= @endDate)
+		AND b.[user_id] = @user_id
+		GROUP BY a.att_time_stamp,c.att_type_name
+	END
+	--Parent
+	ELSE IF (@roleId = 3)
+	BEGIN
+		SELECT
+			 a.att_time_stamp AS [Date],  
+			 c.att_type_name  AS [AttendanceType],  
+			 COUNT(c.att_type_id) AS Count  
+		FROM dbo.Attendance a  
+		JOIN dbo.Student b ON a.att_stud_id = b.stu_id  
+		JOIN dbo.AttendanceType c ON c.att_type_id = a.att_type_id  
+		WHERE (@startDate IS NULL OR a.att_time_stamp >= @startDate)
+		AND (@endDate IS NULL OR a.att_time_stamp <= @endDate)
+		AND b.parent_id = @user_id
+		GROUP BY a.att_time_stamp,c.att_type_name
+	END
+END
 GO
 USE [master]
 GO
