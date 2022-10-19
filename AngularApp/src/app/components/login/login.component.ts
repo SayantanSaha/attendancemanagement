@@ -22,10 +22,15 @@ export class LoginComponent implements OnInit {
 
   doLogin(){
     this.attendanceService
-      .login(this.username)
+      .login(this.username,this.password)
       .subscribe(
         user=>{
-          console.log(user);
+          if(user!=null){
+            sessionStorage.setItem('isLoggedin', 'true');
+            sessionStorage.setItem('user', user.username);
+            sessionStorage.setItem('token', user.token);
+            this.router.navigate(['/dashboard']);
+          }
         }
       )
   }

@@ -1,13 +1,26 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Login } from './components/login/login';
 
+type LoginResponse={
+  username: string,
+  token:string
+}
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+  })
+};
 @Injectable({
   providedIn: 'root',
 })
 export class AttendanceService {
+
+  
 
   private ApiUrl: string = "http://localhost:8080/";
 
@@ -42,16 +55,16 @@ export class AttendanceService {
 
 
   getDailyData() {
-    return this.http.get<any>(this.ApiUrl + "v_attendance?page=0&size=10000");
+    return this.http.get<any>(this.ApiUrl + "v_attendance?page=0&size=10000",httpOptions);
   }
 
   getMonthlyData() {
-    return this.http.get<any>(this.ApiUrl + "v_monthly_attendance?page=0&size=10000");
+    return this.http.get<any>(this.ApiUrl + "v_monthly_attendance?page=0&size=10000",httpOptions);
   }
 
-  login(userName: String): Observable<Login> {
+  login(userName: String,password: String): Observable<LoginResponse> {
     
-    return this.http.get<Login>(this.ApiUrl+'login/search/findByLoginUsername?username='+userName).pipe(
+    return this.http.post<LoginResponse>(this.ApiUrl+'login',{username: userName,password: password}).pipe(
       catchError(this.handleError)
     );
   }
