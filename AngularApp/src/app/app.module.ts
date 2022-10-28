@@ -13,6 +13,7 @@ import { MatListModule } from '@angular/material/list'
 import * as PlotlyJS from 'plotly.js-dist-min';
 import { PlotlyModule } from 'angular-plotly.js';
 import { FormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 PlotlyModule.plotlyjs = PlotlyJS;
 
@@ -21,12 +22,14 @@ import { AttendanceService } from './attendance.service';
 import { HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { LoginComponent } from './components/login/login.component';
+import { ChangePasswordComponent } from './components/change-password/change-password.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
-    LoginComponent
+    LoginComponent,
+    ChangePasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,8 @@ import { LoginComponent } from './components/login/login.component';
     MatListModule,
     PlotlyModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    MatSnackBarModule
   ],
   providers: [AttendanceService, DatePipe],
   bootstrap: [AppComponent]

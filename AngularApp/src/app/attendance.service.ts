@@ -68,4 +68,10 @@ export class AttendanceService {
       catchError(this.handleError)
     );
   }
+
+  changePassword(userName: String, oldPassword: String, newPassword: String): Observable<void> {
+    return this.http.patch<void>(this.ApiUrl + 'change-password',{username: userName, oldPassword: oldPassword, newPassword: newPassword}).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

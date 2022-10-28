@@ -22,7 +22,7 @@
 | T06 | email notifications | Ability to sends email notifications to students who are absent|Shyam Sundar Puta|❓|
 | T07 | Absence Correction - admin, Teacher | Ability to correct the absence record with audit|Mohammad Irshad|❓|
 | T08 | Report | Ability to generate simple report based on certain selection criteria|Abhay Deshmukh|❓|
-| T09 | Change password  | User able to reset the password|Maj Sandeep Singh|❓|
+| T09 | Change password  | User able to reset the password|Maj Sandeep Singh|✔|
 | T10 | Service end point integration | Exchange-protocol and integration solution|Anu Shibin J|✔|
 
 # How to simply spin up the whole Application-Stack 🏃‍♂️
