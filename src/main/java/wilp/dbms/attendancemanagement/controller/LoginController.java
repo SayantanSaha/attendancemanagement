@@ -12,14 +12,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.lang.Strings;
 import wilp.dbms.attendancemanagement.model.Login;
 import wilp.dbms.attendancemanagement.repo.LoginRepo;
 
@@ -92,5 +98,28 @@ public class LoginController
             logger.info("Invalid Username:"+ payload.get("username"));
             return null;
         }      
+    }
+
+    @PatchMapping(path =  "/change-password")
+    public void changePassword(@RequestBody Map<String, String> payload, HttpServletRequest request) {
+        List<Login> records = loginRepo.findByLoginUsername(payload.get("username"));
+        if(!CollectionUtils.isEmpty(records)) {
+            Login record = records.get(0);
+            String oldPassword = payload.get("oldPassword");
+            if(oldPassword == null || oldPassword.isEmpty()) {
+                throw new IllegalArgumentException("Old password can not be empty in the request");
+            }
+            if(!record.getLoginUserPwd().equals(oldPassword)) {
+                throw new IllegalArgumentException("Old password is not matching with current password");
+            }
+            String newPassssword = payload.get("newPassword");
+            if(newPassssword == null || newPassssword.isEmpty()) {
+                throw new IllegalArgumentException("New passssword can not be empty in the request");
+            }
+            record.setLoginUserPwd(payload.get("newPassword"));
+            loginRepo.save(record);
+        } else {
+            logger.warn("no login records");
+        }
     }
 }
