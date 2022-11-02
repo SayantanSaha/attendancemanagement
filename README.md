@@ -16,7 +16,7 @@
 |---|---|---|---|---|
 | T01 | User management (Admin) | Authentication, creation of the users, managing of user data|Harish NG|❓|
 | T02 | Login – Teacher, student, parent | Authentication on success takes to the respective user page|Sayanthan Saha|❓|
-| T03 | Dashboard | Represents the particular user’s data|Rokkam Nikilesh Sai|✔|
+| T03 | Dashboard | Attendance overivew graphs|Rokkam Nikilesh Sai|✔|
 | T04 | Search for Teacher, student | Ability to search student by its last name or unique id & particular course to get his/her attendance from assigned classes.|Shikar Shukla|❓|
 | T05 | Update - Teacher | Ability to update student attendance|Mekapati Naga Mallika|❓|
 | T06 | email notifications | Ability to sends email notifications to students who are absent|Shyam Sundar Puta|❓|
