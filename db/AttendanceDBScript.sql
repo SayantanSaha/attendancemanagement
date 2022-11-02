@@ -39530,6 +39530,10 @@ CREATE PROCEDURE [dbo].[GetDailyAttendance]
 )
 AS
 BEGIN
+	/*
+		exec [dbo].[GetDailyAttendance] 2,null,null
+	*/
+	SET TRANSACTION ISOLATION LEVEL READ COMMITTED 
 	declare @roleId INT
 	select @roleId = (select role_id from dbo.[User] where [user_id] = @user_id)
 
