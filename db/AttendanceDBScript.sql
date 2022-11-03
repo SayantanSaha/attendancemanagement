@@ -46,6 +46,31 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+/****** Object:  Table [dbo].[Teacher]    Script Date: 2022-10-14 8:27:42 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Teacher](
+	[teacher_id] [int] IDENTITY(1,1) NOT NULL,
+	[teacher_first_name] [varchar](50) NOT NULL,
+	[teacher_last_name] [varchar](50) NOT NULL,
+	[gender] [varchar](50) NOT NULL,
+	[nationality] [varchar](50) NOT NULL,
+	[ed_level] [varchar](50) NOT NULL,
+	[department] [varchar](50) NOT NULL,
+	[designation] [varchar](50) NOT NULL,
+	[specialization] [varchar](50) NOT NULL,
+	[teacher_contact] [varchar](50) NOT NULL,
+	[date_of_birth] [datetime] NOT NULL,
+	[date_of_joining] [datetime] NOT NULL,
+	[user_id] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[teacher_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
 /****** Object:  Table [dbo].[Attendance]    Script Date: 2022-10-14 8:27:42 PM ******/
 SET ANSI_NULLS ON
 GO
@@ -39517,6 +39542,25 @@ REFERENCES [dbo].[Role] ([role_id])
 GO
 ALTER TABLE [dbo].[User] CHECK CONSTRAINT [FK_User_Role]
 GO
+
+SET IDENTITY_INSERT [dbo].[Teacher] ON 
+GO
+INSERT [dbo].[Teacher] ([teacher_id], [teacher_first_name], [teacher_last_name], [gender], [nationality], [ed_level], [department], [designation], [specialization], [teacher_contact], [date_of_birth], [date_of_joining], [user_id]) VALUES (1, N'Ada', N'Lovelace', N'F', N'British', N'Masters', N'Computer Science', N'Computer Science Teacher', N'Programming', N'9123456789', CAST(N'1986-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL)
+GO
+INSERT [dbo].[Teacher] ([teacher_id], [teacher_first_name], [teacher_last_name], [gender], [nationality], [ed_level], [department], [designation], [specialization], [teacher_contact], [date_of_birth], [date_of_joining], [user_id]) VALUES (2, N'Ada', N'Lovelace', N'F', N'British', N'Masters', N'Computer Science', N'Computer Science Teacher', N'Programming', N'9123456789', CAST(N'1986-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL)
+GO
+INSERT [dbo].[Teacher] ([teacher_id], [teacher_first_name], [teacher_last_name], [gender], [nationality], [ed_level], [department], [designation], [specialization], [teacher_contact], [date_of_birth], [date_of_joining], [user_id]) VALUES (3, N'Ada', N'Lovelace', N'F', N'British', N'Masters', N'Computer Science', N'Computer Science Teacher', N'Programming', N'9123456789', CAST(N'1986-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL)
+GO
+INSERT [dbo].[Teacher] ([teacher_id], [teacher_first_name], [teacher_last_name], [gender], [nationality], [ed_level], [department], [designation], [specialization], [teacher_contact], [date_of_birth], [date_of_joining], [user_id]) VALUES (4, N'Ada', N'Lovelace', N'F', N'British', N'Masters', N'Computer Science', N'Computer Science Teacher', N'Programming', N'9123456789', CAST(N'1986-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL)
+GO
+INSERT [dbo].[Teacher] ([teacher_id], [teacher_first_name], [teacher_last_name], [gender], [nationality], [ed_level], [department], [designation], [specialization], [teacher_contact], [date_of_birth], [date_of_joining], [user_id]) VALUES (5, N'Ada', N'Lovelace', N'F', N'British', N'Masters', N'Computer Science', N'Computer Science Teacher', N'Programming', N'9123456789', CAST(N'1986-01-01T00:00:00.000' AS DateTime), CAST(N'2022-09-10T00:00:00.000' AS DateTime), NULL)
+GO
+SET IDENTITY_INSERT [dbo].[Teacher] OFF
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[GetDailyAttendance]    Script Date: 2022-10-14 8:27:43 PM ******/
 /****** Object:  StoredProcedure [dbo].[GetDailyAttendance]    Script Date: 2022-10-14 8:27:43 PM ******/
 SET ANSI_NULLS ON
 GO
