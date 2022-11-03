@@ -1,39 +1,89 @@
 <div class="example-container" [class.example-is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="example-toolbar">
-    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
-    <h1 class="example-app-name" style="cursor: pointer" routerLink="/">Attendance App</h1>
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <h1 class="example-app-name" style="cursor: pointer" routerLink="/">
+      Attendance App
+    </h1>
     <span class="example-spacer"></span>
-    <button [routerLink]="['/login']" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+    <button
+      [routerLink]="['/login']"
+      mat-icon-button
+      class="example-icon"
+      aria-label="Example icon-button with share icon"
+    >
       <mat-icon>login</mat-icon>
     </button>
-    <button *ngIf="loggedIn" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+    <button
+      *ngIf="loggedIn"
+      mat-icon-button
+      class="example-icon"
+      aria-label="Example icon-button with share icon"
+    >
       <mat-icon>logout</mat-icon>
     </button>
   </mat-toolbar>
 
-  <mat-sidenav-container class="example-sidenav-container mat-elevation-z8"
-                         [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
-                 [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" [opened]="isShowing">
+  <mat-sidenav-container
+    class="example-sidenav-container mat-elevation-z8"
+    [style.marginTop.px]="mobileQuery.matches ? 56 : 0"
+  >
+    <mat-sidenav
+      #snav
+      [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="mobileQuery.matches"
+      fixedTopGap="56"
+      [opened]="isShowing"
+    >
       <div style="text-align: initial">
-        <button mat-button class="menu-button mb-2" [routerLink]="['/dashboard']" [routerLinkActive]="['is-active','shadow','bg-body','rounded']" color="secondary">
-          <mat-icon style="vertical-align: text-top" class="icon-color">assessment</mat-icon>
-          <span style="vertical-align: sub;"> Dashboard</span>
+        <button
+          mat-button
+          class="menu-button mb-2"
+          [routerLink]="['/dashboard']"
+          [routerLinkActive]="['is-active', 'shadow', 'bg-body', 'rounded']"
+          color="secondary"
+        >
+          <mat-icon style="vertical-align: text-top" class="icon-color"
+            >assessment</mat-icon
+          >
+          <span style="vertical-align: sub"> Dashboard</span>
         </button>
         <button mat-button class="menu-button" routerLink="." color="secondary">
-          <mat-icon style="vertical-align: text-top" class="icon-color">people</mat-icon>
-          <span style="vertical-align: sub;"> Students</span>
+          <mat-icon style="vertical-align: text-top" class="icon-color"
+            >people</mat-icon
+          >
+          <span style="vertical-align: sub"> Students</span>
         </button>
         <button mat-button class="menu-button" routerLink="." color="secondary">
-          <mat-icon style="vertical-align: text-top" class="icon-color">calendar_today</mat-icon>
-          <span style="vertical-align: sub;"> Attendance</span>
+          <mat-icon style="vertical-align: text-top" class="icon-color"
+            >calendar_today</mat-icon
+          >
+          <span style="vertical-align: sub"> Attendance</span>
+        </button>
+        <button
+          mat-button
+          class="menu-button"
+          [routerLink]="['/search']"
+          [routerLinkActive]="['is-active', 'shadow', 'bg-body', 'rounded']"
+          color="secondary"
+        >
+          <mat-icon style="vertical-align: text-top" class="icon-color"
+            >search</mat-icon
+          >
+          <span style="vertical-align: sub"> Search</span>
         </button>
       </div>
 
       <div>
         <mat-divider></mat-divider>
-        <button mat-button class="menu-button" routerLink="/change-password" color="secondary">
-          <span style="vertical-align: sub;">Change Password</span>
+        <button
+          mat-button
+          class="menu-button"
+          routerLink="/change-password"
+          color="secondary"
+        >
+          <span style="vertical-align: sub">Change Password</span>
         </button>
       </div>
     </mat-sidenav>

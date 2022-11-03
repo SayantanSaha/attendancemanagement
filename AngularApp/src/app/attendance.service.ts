@@ -20,7 +20,7 @@ const httpOptions = {
 })
 export class AttendanceService {
 
-  
+
 
   private ApiUrl: string = "http://localhost:8080/";
 
@@ -63,7 +63,14 @@ export class AttendanceService {
   }
 
   login(userName: String,password: String): Observable<LoginResponse> {
-    
+
+    return this.http.post<LoginResponse>(this.ApiUrl+'login',{username: userName,password: password}).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  search(userName: String,password: String): Observable<LoginResponse> {
+
     return this.http.post<LoginResponse>(this.ApiUrl+'login',{username: userName,password: password}).pipe(
       catchError(this.handleError)
     );
